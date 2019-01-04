@@ -9,6 +9,7 @@ package com.microsoft.azure.maven.auth;
 import com.microsoft.azure.AzureEnvironment;
 import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.credentials.AzureCliCredentials;
+import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.Azure.Authenticated;
 import com.microsoft.azure.maven.Utils;
@@ -220,8 +221,13 @@ public class AzureAuthHelper {
         } catch (Exception e) {
             getLog().debug(AZURE_CLI_AUTH_FAIL);
             getLog().debug(e);
+            final Authenticated auth = azureConfigure().authenticate(new MSICredentials());
+            if (auth != null) {
+                getLog().info("MSI logged");
+            }
+            return auth;
         }
-        return null;
+        // return null;
     }
 
     /**
